@@ -26,5 +26,17 @@ class ActivityTest < Minitest::Test
     assert_equal ({"Maria" => 20}), @activity.participants
   end
 
+  def test_it_can_split_cost_evenly
+    @activity.add_participant("Maria", 20)
+    @activity.add_participant("Luther", 40)
+    assert_equal 30, @activity.split
+    @activity.add_participant("Mark", 60)
+    assert_equal 40, @activity.split
+  end
 
+  def test_it_can_calculate_how_much_everyone_owes
+    @activity.add_participant("Maria", 20)
+    @activity.add_participant("Luther", 40)
+    assert_equal ({"Maria" => 10, "Luther" => -10}), @activity.owed
+  end
 end
