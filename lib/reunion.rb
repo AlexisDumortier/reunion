@@ -32,15 +32,32 @@ class Reunion
   end
 
   def detailed_breakout
-    skip
+    list_of_participants.reduce({}) do |det_breakout, participant|
+    @activities.each do |activity|
+      if activity.owed[participant]
+        amount = activity.owed[participant]
+        activity_owed = activity.owed
+        activity_owed.delete(participant)
+        payees = activity_owed.reduce([]) do |acc, charge|
+          amount > 0 ? (acc << charge[0] if charge[1] < 0) : (acc << charge[0] if charge[1] > 0)
+          acc
+        end
+        if det_breakout[participant] 
+          det_breakout[participant] << {activity: activity.name, payees: payees, amount: (amount/payees.size).to_i} 
+        else
+          det_breakout[participant] = [{activity: activity.name, payees: payees, amount: (amount/payees.size).to_i}]
+        end
+      end
+    end
+    det_breakout
+    end
   end
 
   def list_of_participants
-    participants = @activities.reduce([]) do |participants, activities|
+    list_participants = @activities.reduce([]) do |participants, activities|
       participants << activities.participants.to_a
       participants
     end
-    (participants.flatten.select {|part| part.class == String}).uniq
+    (list_participants.flatten.select {|part| part.class == String}).uniq
   end
-
 end
