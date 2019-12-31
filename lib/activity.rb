@@ -18,7 +18,7 @@ class Activity
   end
 
   def owed
-    @participants.reduce({}) do | owed_per_person, participant|
+    @participants.reduce({}) do |owed_per_person, participant|
       owed_per_person[participant[0]] = split - participant[1]
       owed_per_person
     end
